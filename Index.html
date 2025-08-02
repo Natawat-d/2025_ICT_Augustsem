@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตารางเรียนภาคการศึกษาเดือนสิงหาคม - ตุลาคม ค.ศ. 2025</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .timetable-container {
+            overflow-x: auto; /* Enables horizontal scrolling for smaller screens */
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 2500px; /* Increased minimum width to accommodate longer course titles and room info */
+            font-size: 0.8em; /* Slightly reduced font size for better fit */
+        }
+
+        .timetable th, .timetable td {
+            border: 1px solid #e0e0e0;
+            padding: 8px 5px; /* Reduced padding for narrower cells */
+            text-align: center;
+            vertical-align: top;
+            line-height: 1.3;
+        }
+
+        .timetable thead th {
+            background-color: #007bff; /* Blue */
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 10px 5px;
+            white-space: nowrap; /* Prevents time headers from wrapping */
+        }
+
+        .timetable tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        .timetable tbody tr:hover {
+            background-color: #e6f7ff; /* Lighter on hover */
+        }
+
+        .timetable td {
+            background-color: #ffffff;
+        }
+
+        /* For the "Day" column */
+        .timetable td:first-child, .timetable th:first-child {
+            background-color: #eff3f6;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 10px;
+            position: sticky; /* Makes the day column stick when scrolling horizontally */
+            left: 0;
+            z-index: 2; /* Ensures Day column is on top */
+            min-width: 100px; /* Minimum width for Day column */
+        }
+        .timetable th:first-child {
+            background-color: #0056b3; /* Darker blue for Day header */
+            color: white;
+            z-index: 3; /* Ensures Day header is on top */
+        }
+
+        /* Style for empty slots */
+        .empty-slot {
+            background-color: #ffffff;
+        }
+
+        /* Style for course information */
+        .course-info {
+            font-size: 0.8em; /* Small font size for cell content */
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            margin: 2px 0;
+            color: #333;
+        }
+        .course-code {
+            font-weight: bold;
+            display: block; /* Course code on new line */
+            margin-bottom: 2px;
+        }
+        .course-title {
+            display: block; /* Course title on new line */
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+        .lecturer {
+            font-style: italic;
+            color: #666;
+            display: block; /* Lecturer on new line */
+            margin-bottom: 2px;
+        }
+        .room-info, .zoom-info {
+            font-size: 0.8em;
+            color: #555;
+            display: block;
+            margin-top: 2px;
+        }
+        .zoom-link {
+            word-break: break-all; /* Allows long links to wrap */
+        }
+        .start-date {
+            font-size: 0.75em;
+            color: #888;
+            display: block; /* Start date on new line */
+        }
+        .note {
+            font-size: 0.7em;
+            color: #a00;
+            display: block;
+            margin-top: 3px;
+        }
+
+        /* Colors for each course */
+        .color-AT7003 { background-color: #e6f2ff; border: 1px solid #a6d9ff; } /* Light Blue */
+        .color-AT7005 { background-color: #ffe6e6; border: 1px solid #ffb3b3; } /* Light Red */
+        .color-AT7025 { background-color: #e6ffe6; border: 1px solid #b3ffb3; } /* Light Green */
+        .color-AT7103 { background-color: #fff2e6; border: 1px solid #ffcc99; } /* Light Orange */
+        .color-AT8201 { background-color: #d9e6ff; border: 1px solid #a6ccff; } /* Medium Light Blue */
+        .color-AT8202 { background-color: #f2e6ff; border: 1px solid #d9b3ff; } /* Light Purple */
+        .color-AT8203 { background-color: #ffffcc; border: 1px solid #ffff99; } /* Light Yellow */
+        .color-AT8207 { background-color: #e6fff2; border: 1px solid #b3ffcc; } /* Light Teal */
+        .color-AT8208 { background-color: #ffe6f2; border: 1px solid #ffb3d9; } /* Light Pink */
+        .color-AT8209 { background-color: #f0f8ff; border: 1px solid #cce5ff; } /* Very Light Blue */
+        .color-AT7601 { background-color: #f2ffe6; border: 1px solid #ccffb3; } /* Light Lime Green */
+        .color-AT7603 { background-color: #e6f7ff; border: 1px solid #b3e0ff; } /* Slightly Darker Light Blue */
+        .color-AT7622 { background-color: #fffae6; border: 1px solid #ffeb99; } /* Light Gold */
+        .color-AT7629 { background-color: #ccffff; border: 1px solid #99ffff; } /* Cyan - New course color */
+        .color-AT769023 { background-color: #f7e6ff; border: 1px solid #e0b3ff; } /* Light Lavender */
+        .color-AT769029 { background-color: #ffccff; border: 1px solid #ff99ff; } /* Magenta - New course color */
+        .color-AT769044 { background-color: #e6ffe6; border: 1px solid #b3ffb3; } /* Light Green (same as AT70.25 if no clash) */
+        .color-AT7702 { background-color: #e0f2f7; border: 1px solid #cce5ed; } /* Light Grayish Blue */
+        .color-AT7704 { background-color: #ffe0f2; border: 1px solid #ffcce5; } /* Light Rose */
+        .color-AT7719 { background-color: #e6ffe6; border: 1px solid #b3ffb3; } /* Light Green */
+        .color-AT8001 { background-color: #fff0f0; border: 1px solid #ffcccc; } /* Very Light Red */
+        .color-AT8302 { background-color: #e0f2ff; border: 1px solid #b3d9ff; } /* Light Sky Blue */
+        .color-AT839002 { background-color: #e6f7e6; border: 1px solid #b3e0b3; } /* Pale Green */
+
+    </style>
+</head>
+<body>
+
+    <h1>ตารางเรียนภาคการศึกษาเดือนสิงหาคม - ตุลาคม ค.ศ. 2025</h1>
+
+    <div class="timetable-container">
+        <table class="timetable">
+            <thead>
+                <tr>
+                    <th>วัน</th>
+                    <th>9:00 - 9:30</th>
+                    <th>9:30 - 10:00</th>
+                    <th>10:00 - 10:30</th>
+                    <th>10:30 - 11:00</th>
+                    <th>11:00 - 11:30</th>
+                    <th>11:30 - 12:00</th>
+                    <th>12:00 - 12:30</th>
+                    <th>12:30 - 13:00</th>
+                    <th>13:00 - 13:30</th>
+                    <th>13:30 - 14:00</th>
+                    <th>14:00 - 14:30</th>
+                    <th>14:30 - 15:00</th>
+                    <th>15:00 - 15:30</th>
+                    <th>15:30 - 16:00</th>
+                    <th>16:00 - 16:30</th>
+                    <th>16:30 - 17:00</th>
+                    <th>17:00 - 17:30</th>
+                    <th>17:30 - 18:00</th>
+                    <th>18:00 - 18:30</th>
+                    <th>18:30 - 19:00</th>
+                    <th>19:00 - 19:30</th>
+                    <th>19:30 - 20:00</th>
+                    <th>20:00 - 20:30</th>
+                    <th>20:30 - 21:00</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>**วันจันทร์**</td>
+                    <td colspan="6">
+                        <div class="course-info color-AT769029">
+                            <span class="course-code">AT76.9029</span>
+                            <span class="course-title">Selected Topic: Introduction to Global Navigation Satellite Systems</span><br>
+                            <span class="lecturer">Dr. Sanit</span>
+                            <span class="room-info">ห้อง: CS 106</span>
+                            <span class="start-date">เริ่ม ต.ค. 2025</span>
+                        </div>
+                    </td>
+                    <td colspan="3" style="position: relative;">
+                        <div class="course-info color-AT7719" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT77.19</span>
+                            <span class="course-title">Optimization for Communications and Networks</span><br>
+                            <span class="lecturer">Dr. Poompat</span>
+                            <span class="room-info">ห้อง: CS 210</span>
+                            <span class="start-date">เริ่ม 13 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT769044" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.9044</span>
+                            <span class="course-title">Selected Topic: Introduction to Python</span><br>
+                            <span class="lecturer">Dr. Virdis</span>
+                            <span class="room-info">ห้อง: CS 106</span>
+                            <span class="start-date">เริ่ม 18 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="2" class="empty-slot"></td>
+                    <td colspan="3">
+                        <div class="course-info color-AT8207">
+                            <span class="course-code">AT82.07</span>
+                            <span class="course-title">Artificial Intelligence: Knowledge Representation and Reasoning</span><br>
+                            <span class="lecturer">Prof. Dung</span>
+                            <span class="room-info">ห้อง: TC 103</span>
+                            <span class="start-date">เริ่ม 18 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="3">
+                        <div class="course-info color-AT7003">
+                            <span class="course-code">AT70.03</span>
+                            <span class="course-title">Theory of Computation</span><br>
+                            <span class="lecturer">Prof. Dung</span>
+                            <span class="room-info">ห้อง: CS 106</span>
+                            <span class="zoom-info zoom-link">Zoom ID: 492 603 4006<br>Passcode: 256512</span>
+                            <span class="start-date">เริ่ม 18 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" class="empty-slot"></td>
+                    <td colspan="6">
+                        <div class="course-info color-AT8001">
+                            <span class="course-code">AT80.01</span>
+                            <span class="course-title">Information and Communication Technology Applications: Users and Producers</span><br>
+                            <span class="lecturer">Dr. Teerawat</span>
+                            <span class="room-info">ห้อง: CS 209</span>
+                            <span class="start-date">เริ่ม 11 ส.ค.</span>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>**วันอังคาร**</td>
+                    <td colspan="6">
+                        <div class="course-info color-AT7629">
+                            <span class="course-code">AT76.29</span>
+                            <span class="course-title">Positioning and Location-Based Services Technology</span><br>
+                            <span class="lecturer">Dr. Sarawut</span>
+                            <span class="room-info">ห้อง: TC 103</span>
+                            <span class="start-date">เริ่ม ต.ค. 2025</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT8201" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT82.01</span>
+                            <span class="course-title">Computer Programming for Data Science and Artificial Intelligence</span><br>
+                            <span class="lecturer">Dr. Chantri</span>
+                            <span class="room-info">ห้อง: W 202</span>
+                            <span class="start-date">เริ่ม 19 ส.ค.</span>
+                            <span class="note">(สำหรับนักศึกษา DSAI เท่านั้น)</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT7622" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.22</span>
+                            <span class="course-title">Web GIS Technology (บรรยาย)</span><br>
+                            <span class="lecturer">Dr. Sarawut</span>
+                            <span class="room-info">ห้อง: TC 103</span>
+                            <span class="start-date">เริ่ม 19 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="3" style="position: relative;">
+                        <div class="course-info color-AT7704" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT77.04</span>
+                            <span class="course-title">Data Communications</span><br>
+                            <span class="lecturer">Dr. Teerapat</span>
+                            <span class="room-info">ห้อง: CS 210</span>
+                            <span class="start-date">เริ่ม 19 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT8202" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT82.02</span>
+                            <span class="course-title">Data Modeling and Management</span><br>
+                            <span class="lecturer">Dr. Chutiporn/Dr. Kantinee</span>
+                            <span class="room-info">ห้อง: W 202</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                            <span class="note">(ไม่เหมาะสำหรับนักศึกษา DSAI ที่เข้าเรียนเดือน ส.ค. 2025)</span>
+                        </div>
+                    </td>
+                    <td colspan="2" class="empty-slot"></td>
+                    <td colspan="3">
+                        <div class="course-info color-AT8207">
+                            <span class="course-code">AT82.07</span>
+                            <span class="course-title">Artificial Intelligence: Knowledge Representation and Reasoning</span><br>
+                            <span class="lecturer">Prof. Dung</span>
+                            <span class="room-info">ห้อง: TC 103</span>
+                            <span class="start-date">เริ่ม 18 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT7622" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.22</span>
+                            <span class="course-title">Web GIS Technology (ปฏิบัติการ)</span><br>
+                            <span class="lecturer">Dr. Sarawut</span>
+                            <span class="room-info">ห้อง: TC 103</span>
+                            <span class="start-date">เริ่ม 19 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="3" style="position: relative;">
+                        <div class="course-info color-AT7704" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT77.04</span>
+                            <span class="course-title">Data Communications</span><br>
+                            <span class="lecturer">Dr. Teerapat</span>
+                            <span class="room-info">ห้อง: CS 210</span>
+                            <span class="start-date">เริ่ม 19 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT8201" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT82.01</span>
+                            <span class="course-title">Computer Programming for Data Science and Artificial Intelligence</span><br>
+                            <span class="lecturer">Dr. Chantri</span>
+                            <span class="room-info">ห้อง: W 202</span>
+                            <span class="start-date">เริ่ม 19 ส.ค.</span>
+                            <span class="note">(สำหรับนักศึกษา DSAI เท่านั้น)</span>
+                        </div>
+                    </td>
+                    <td colspan="5">
+                        <div class="course-info color-AT8202">
+                            <span class="course-code">AT82.02</span>
+                            <span class="course-title">Data Modeling and Management</span><br>
+                            <span class="lecturer">Dr. Chutiporn/Dr. Kantinee</span>
+                            <span class="room-info">ห้อง: W 202</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                            <span class="note">(ไม่เหมาะสำหรับนักศึกษา DSAI ที่เข้าเรียนเดือน ส.ค. 2025)</span>
+                        </div>
+                    </td>
+                    <td colspan="2" class="empty-slot"></td>
+                </tr>
+
+                <tr>
+                    <td>**วันพุธ**</td>
+                    <td colspan="6">
+                        <div class="course-info color-AT8203">
+                            <span class="course-code">AT82.03</span>
+                            <span class="course-title">Machine Learning</span><br>
+                            <span class="lecturer">Dr. Chaklam</span>
+                            <span class="room-info">ห้อง: TC 101</span>
+                            <span class="start-date">เริ่ม 13 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="3" style="position: relative;">
+                        <div class="course-info color-AT7719" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT77.19</span>
+                            <span class="course-title">Optimization for Communications and Networks</span><br>
+                            <span class="lecturer">Dr. Poompat</span>
+                            <span class="room-info">ห้อง: CS 210</span>
+                            <span class="start-date">เริ่ม 13 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT769023" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.9023</span>
+                            <span class="course-title">Selected Topic: GIS for Health</span><br>
+                            <span class="lecturer">Prof. Nitin</span>
+                            <span class="room-info">ห้อง: TC 101</span>
+                            <span class="start-date">เริ่ม 20 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT7702" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT77.02</span>
+                            <span class="course-title">Signal, Systems and Stochastic Processes</span><br>
+                            <span class="lecturer">Prof. Attaphongse</span>
+                            <span class="room-info">ห้อง: CS 210</span>
+                            <span class="start-date">เริ่ม 20 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="2" class="empty-slot"></td>
+                    <td colspan="6">
+                        <div class="course-info color-AT7005">
+                            <span class="course-code">AT70.05</span>
+                            <span class="course-title">Computer Networks</span><br>
+                            <span class="lecturer">Dr. Sukumal</span>
+                            <span class="room-info">ห้อง: TC 103</span>
+                            <span class="zoom-info zoom-link">Zoom ID: 592 715 4698<br>Passcode: 965943</span>
+                            <span class="start-date">เริ่ม 13 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="10" class="empty-slot"></td>
+                </tr>
+
+                <tr>
+                    <td>**วันพฤหัสบดี**</td>
+                    <td colspan="6">
+                        <div class="course-info color-AT8209">
+                            <span class="course-code">AT82.09</span>
+                            <span class="course-title">Human-Computer Interaction and Information Visualization</span><br>
+                            <span class="lecturer">Dr. Chaklam</span>
+                            <span class="room-info">ห้อง: TC 201</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT8302" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT83.02</span>
+                            <span class="course-title">Wireless Technologies for Internet of Things</span><br>
+                            <span class="lecturer">Prof. Attaphongse</span>
+                            <span class="room-info">ห้อง: E 233</span>
+                            <span class="start-date">เริ่ม 21 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT7025" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT70.25</span>
+                            <span class="course-title">Full Stack Application Development (บรรยาย)</span><br>
+                            <span class="lecturer">Dr. Chantri</span>
+                            <span class="room-info">ห้อง: W 216</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT7603" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.03</span>
+                            <span class="course-title">Remote Sensing (บรรยาย)</span><br>
+                            <span class="lecturer">Dr. Virdis</span>
+                            <span class="room-info">ห้อง: TC 201</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="2" class="empty-slot"></td>
+                    <td colspan="6">
+                        <div class="course-info color-AT7103">
+                            <span class="course-code">AT71.03</span>
+                            <span class="course-title">E-Business Development and Technology</span><br>
+                            <span class="lecturer">Dr. Vatcharaporn</span>
+                            <span class="room-info">ห้อง: W 202</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT8302" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT83.02</span>
+                            <span class="course-title">Wireless Technologies for Internet of Things (ปฏิบัติการ)</span><br>
+                            <span class="lecturer">Prof. Attaphongse</span>
+                            <span class="room-info">ห้อง: E 233</span>
+                            <span class="start-date">เริ่ม 21 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT7603" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.03</span>
+                            <span class="course-title">Remote Sensing (ปฏิบัติการ)</span><br>
+                            <span class="lecturer">Dr. Virdis</span>
+                            <span class="room-info">ห้อง: TC 201</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="3" class="empty-slot"></td>
+                    <td colspan="5">
+                        <div class="course-info color-AT8202">
+                            <span class="course-code">AT82.02</span>
+                            <span class="course-title">Data Modeling and Management</span><br>
+                            <span class="lecturer">Dr. Chutiporn/Dr. Kantinee</span>
+                            <span class="room-info">ห้อง: W 202</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                            <span class="note">(ไม่เหมาะสำหรับนักศึกษา DSAI ที่เข้าเรียนเดือน ส.ค. 2025)</span>
+                        </div>
+                    </td>
+                    <td colspan="2" class="empty-slot"></td>
+                </tr>
+
+                <tr>
+                    <td>**วันศุกร์**</td>
+                    <td colspan="6">
+                        <div class="course-info color-AT7025">
+                            <span class="course-code">AT70.25</span>
+                            <span class="course-title">Full Stack Application Development (ปฏิบัติการ)</span><br>
+                            <span class="lecturer">Dr. Chantri</span>
+                            <span class="room-info">ห้อง: W 216</span>
+                            <span class="start-date">เริ่ม 14 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT769044" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.9044</span>
+                            <span class="course-title">Selected Topic: Introduction to Python</span><br>
+                            <span class="lecturer">Dr. Virdis</span>
+                            <span class="room-info">ห้อง: CS 106</span>
+                            <span class="start-date">เริ่ม 18 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT839002" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT83.9002</span>
+                            <span class="course-title">Selected Topic: Industrial IoT: Machine Development and Industrial Application</span><br>
+                            <span class="lecturer">Dr. Sanit, Mr. Piyawat</span>
+                            <span class="room-info">ห้อง: E 233</span>
+                            <span class="start-date">เริ่ม 15 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="4" style="position: relative;">
+                        <div class="course-info color-AT7601" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT76.01</span>
+                            <span class="course-title">Geographic Information Systems (บรรยาย)</span><br>
+                            <span class="lecturer">Prof. Nitin</span>
+                            <span class="room-info">ห้อง: TC 201</span>
+                            <span class="start-date">เริ่ม 15 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="2" class="empty-slot"></td>
+                    <td colspan="6">
+                        <div class="course-info color-AT7601">
+                            <span class="course-code">AT76.01</span>
+                            <span class="course-title">Geographic Information Systems (ปฏิบัติการ)</span><br>
+                            <span class="lecturer">Prof. Nitin</span>
+                            <span class="room-info">ห้อง: TC 201</span>
+                            <span class="start-date">เริ่ม 15 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT7702" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT77.02</span>
+                            <span class="course-title">Signal, Systems and Stochastic Processes (ปฏิบัติการ)</span><br>
+                            <span class="lecturer">Prof. Attaphongse</span>
+                            <span class="room-info">ห้อง: CS 210</span>
+                            <span class="start-date">เริ่ม 20 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6" style="position: relative;">
+                        <div class="course-info color-AT839002" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                            <span class="course-code">AT83.9002</span>
+                            <span class="course-title">Selected Topic: Industrial IoT: Machine Development and Industrial Application (ปฏิบัติการ)</span><br>
+                            <span class="lecturer">Dr. Sanit, Mr. Piyawat</span>
+                            <span class="room-info">ห้อง: E 233</span>
+                            <span class="start-date">เริ่ม 15 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="10" class="empty-slot"></td>
+                </tr>
+
+                <tr>
+                    <td>**วันเสาร์**</td>
+                    <td colspan="6">
+                        <div class="course-info color-AT8001">
+                            <span class="course-code">AT80.01</span>
+                            <span class="course-title">Information and Communication Technology Applications: Users and Producers</span><br>
+                            <span class="lecturer">Dr. Teerawat</span>
+                            <span class="room-info">ห้อง: CS 209</span>
+                            <span class="start-date">เริ่ม 11 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="6">
+                        <div class="course-info color-AT8208">
+                            <span class="course-code">AT82.08</span>
+                            <span class="course-title">Computer Vision</span><br>
+                            <span class="lecturer">Dr. Cherdsak</span>
+                            <span class="room-info">ห้อง: TC 103</span>
+                            <span class="start-date">เริ่ม 16 ส.ค.</span>
+                        </div>
+                    </td>
+                    <td colspan="18" class="empty-slot"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
