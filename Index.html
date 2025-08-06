@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT Aug2025</title>
+    <title>ICT Aug2025 Timetable</title>
     <!-- Tailwind CSS CDN for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter for a clean, modern look -->
@@ -435,8 +435,8 @@
                     timetableGrid[day][startMinutes].classes.push({
                         ...cls, // Copy all class properties
                         displayType: timeSlot.type || '', // 'Lecture', 'Lab', or empty string
-                        actualStart: timeSlot.start,      // Store original start time for display
-                        actualEnd: timeSlot.end           // Store original end time for display
+                        actualStart: timeSlot.start,       // Store original start time for display
+                        actualEnd: timeSlot.end            // Store original end time for display
                     });
 
                     // Mark all subsequent 30-minute slots covered by this class as 'spanned'
